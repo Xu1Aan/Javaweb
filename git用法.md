@@ -68,14 +68,14 @@ git config --global user.email 1165083811@qq.com
 
 Git本地有三个工作区域：工作目录（Working Directory）、暂存区（Stage/index）、资源库（Repository 或Git Directory）。如果在加上远程的git仓库就可以分为四个工作区域。
 
-<img src="E:\learning\04_javaweb\01_笔记\picture\git基本理论1.webp" style="zoom:80%;" />
+<img src=".\picture\git基本理论1.webp" style="zoom:80%;" />
 
 - Workspace：工作区，就是你平时存放项目代码的地方
 - Index / Stage：暂存区，用于临时存放你的改动，事实上它只是一个文件，保存即将提交到文件列表信息
 - Repository：仓库区（或本地仓库），就是安全存放数据的位置，这里面有你提交到所有版本的数据。其中HEAD指向最新放入仓库的版本
 - Remote：远程仓库，托管代码的服务器，可以简单的认为是你项目组中的一台电脑用于远程数据交换
 
-本地的三个区域确切的说应该是git仓库中HEAD指向的版本：<img src="E:\learning\04_javaweb\01_笔记\picture\git基本理论2.webp" style="zoom:80%;" />
+本地的三个区域确切的说应该是git仓库中HEAD指向的版本：<img src=".\picture\git基本理论2.webp" style="zoom:80%;" />
 
 - Directory：使用Git管理的一个目录，也就是一个仓库，包含我们的工作空间和Git的管理空间。
 - WorkSpace：需要通过Git进行版本控制的目录和文件，这些目录和文件组成了工作空间。
@@ -96,7 +96,7 @@ git的工作流程一般是这样的：
 
 因此，git管理的文件有三种状态：已修改（modified）,已暂存（staged）,已提交(committed)
 
-<img src="E:\learning\04_javaweb\01_笔记\picture\git工作流程1.webp" style="zoom:80%;" />
+<img src=".\picture\git工作流程1.webp" style="zoom:80%;" />
 
 ---
 
@@ -106,7 +106,7 @@ git的工作流程一般是这样的：
 
 工作目录（WorkSpace)一般就是你希望Git帮助你管理的文件夹，可以是你项目的目录，也可以是一个空目录，建议不要有中文。
 
-日常使用只要记住下图6个命令：![](E:\learning\04_javaweb\01_笔记\picture\git项目搭建1.webp)
+日常使用只要记住下图6个命令：![](.\picture\git项目搭建1.webp)
 
 **本地仓库搭建**
 
@@ -193,11 +193,11 @@ doc/*.txt   #会忽略 doc/notes.txt 但不包括 doc/server/arch.txt
 ssh-keygen
 ```
 
-![](E:\learning\04_javaweb\01_笔记\picture\git远程1.webp)
+![](.\picture\git远程1.webp)
 
 3、将公钥信息public key 添加到码云账户中即可！
 
-<img src="E:\learning\04_javaweb\01_笔记\picture\Git集成到IDEA中4.webp" style="zoom:80%;" />
+<img src=".\picture\Git集成到IDEA中4.webp" style="zoom:80%;" />
 
 4、使用码云创建一个自己的仓库！
 
@@ -211,11 +211,11 @@ ssh-keygen
 
 1、新建项目，绑定git。
 
-<img src="E:\learning\04_javaweb\01_笔记\picture\Git集成到IDEA中1.webp" style="zoom:80%;" />
+<img src=".\picture\Git集成到IDEA中1.webp" style="zoom:80%;" />
 
 注意观察idea中的变化
 
-<img src="E:\learning\04_javaweb\01_笔记\picture\Git集成到IDEA中2.webp" style="zoom:80%;" />
+<img src=".\picture\Git集成到IDEA中2.webp" style="zoom:80%;" />
 
 2、修改文件，使用IDEA操作git。
 
@@ -225,5 +225,5 @@ ssh-keygen
 
 3、提交测试
 
-<img src="E:\learning\04_javaweb\01_笔记\picture\Git集成到IDEA中3.webp" style="zoom:80%;" />
+<img src=".\picture\Git集成到IDEA中3.webp" style="zoom:80%;" />
 
