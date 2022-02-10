@@ -4,11 +4,11 @@ git用法参考文章：https://mp.weixin.qq.com/s/Bf7uVhGiu47uOELjmC5uXQ
 
 ---
 
-**Git Bash：**Unix雨Linux风格的命令行，使用最多
+**Git Bash：** Unix雨Linux风格的命令行，使用最多
 
-**Git CMD：**windows风格的命令行
+**Git CMD：** windows风格的命令行
 
-**Git GUI：**图形化界面的Git，不建议初学者使用，尽量先熟悉常用命令
+**Git GUI：** 图形化界面的Git，不建议初学者使用，尽量先熟悉常用命令
 
 ---
 
