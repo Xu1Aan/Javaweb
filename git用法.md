@@ -267,3 +267,32 @@ IDEA中操作
 如果同一个文件在合并分支时都被修改了则会引起冲突：解决的办法是我们可以修改冲突文件后重新提交！选择要保留他的代码还是你的代码！
 
 master主分支应该非常稳定，用来发布新版本，一般情况下不允许在上面工作，工作一般情况下在新建的dev分支上工作，工作完后，比如上要发布，或者说dev分支代码稳定后可以合并到主分支master上来。 
+
+### Git报错解决
+
+- OpenSSL SSL_read: Connection was reset, errno 10054 错误解决：
+
+  ```shell
+  git config --global http.sslVerify "false"
+  ```
+
+  如果没有用，可改回：
+
+  ```shell
+  git config --global http.sslVerify "true"
+  ```
+
+- 本地开启VPN后，GIt也需要设置代理，才能正常略过GFW，访问goole code等网站
+
+  ```shell
+  git config --global https.proxy https://127.0.0.1:1080
+  ```
+
+  取消
+
+  ```shell
+  git config --global --unset http.proxy
+  ```
+
+  
+
