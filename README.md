@@ -1,15 +1,17 @@
 # JavaWEB相关知识（自学资料）
 > JavaWEB学习资料整理与收集 by Xu1Aan
 ---
-Java后端、前端学习资料，最近将逐渐整理一些java基础知识。大厂，冲冲冲！
+Java后端、前端学习资料，最近将逐渐整理一些java面试基础知识、框架要点。大厂，冲冲冲！
 
 **学习资料**
 
-- [git快速入门及详细用法](./git用法.md)
-- [Java基础知识点](./java基础.md)
-- [java流程控制](./java流程控制.md)
+- [x] git快速入门
+  - [git快速入门及详细用法](./markdown/git用法.md)
 
-
+- [x] java基础
+  - [Java程序基础](./markdown/java基础.md)
+  - [java流程控制](./markdown/java流程控制.md)
+  - [java数组操作](./markdown/java数组操作.md)
 
 ---
 
