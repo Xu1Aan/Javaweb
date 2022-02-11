@@ -9,3 +9,15 @@ Java后端、前端学习资料，最近将逐渐整理一些java基础知识。
 - [Java基础知识点](./java基础.md)
 - [java流程控制](./java流程控制.md)
 
+
+
+---
+
+**参考文献**
+
+- 狂神聊Git：https://mp.weixin.qq.com/s/Bf7uVhGiu47uOELjmC5uXQ
+
+- 廖雪峰 Java 教程：https://www.liaoxuefeng.com/wiki/1252599548343744
+
+- 菜鸟教程：https://www.runoob.com/java/java-tutorial.html 
+
