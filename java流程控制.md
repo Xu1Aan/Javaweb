@@ -203,7 +203,7 @@ public class Main {
 
 > 一个剪刀石头布的小demo
 
-switch 用法的小demo： [SwitchDemo](./demo/SwitchDemo)
+switch 用法的小demo： [SwitchDemo](.\demo\SwitchDemo)
 
 注意新语法使用`->`，如果有多条语句，需要用`{}`括起来。不要写`break`语句，因为新语法只会执行匹配的语句，没有穿透效应。
 
