@@ -7,15 +7,14 @@ Java后端、前端学习资料，最近将逐渐整理一些java面试基础知
 
 - [x] git快速入门
   - [git快速入门及详细用法](./markdown/git用法.md)
-
 - [x] java基础
   - [Java程序基础](./markdown/java基础.md)
   - [java流程控制](./markdown/java流程控制.md)
   - [java数组操作](./markdown/java数组操作.md)
-
-- [ ] 面向对象编程
+- [x] 面向对象编程
   - [面向对象编程基础](./markdown/面向对象编程基础.md)
-  - [java核心类]()
+  - [java核心类](./markdown/java核心类.md)
+- [ ] 异常处理
 
 ---
 
