@@ -260,12 +260,7 @@ public class Main {
 英文字符`'A'`的`ASCII`编码和`Unicode`编码：
 
 ```ascii
-         ┌────┐
-ASCII:   │ 41 │
-         └────┘
-         ┌────┬────┐
-Unicode: │ 00 │ 41 │
-         └────┴────┘
+         ┌────┐ASCII:   │ 41 │         └────┘         ┌────┬────┐Unicode: │ 00 │ 41 │         └────┴────┘
 ```
 
 英文字符的`Unicode`编码就是简单地在前面添加一个`00`字节。
@@ -273,12 +268,7 @@ Unicode: │ 00 │ 41 │
 中文字符`'中'`的`GB2312`编码和`Unicode`编码：
 
 ```ascii
-         ┌────┬────┐
-GB2312:  │ d6 │ d0 │
-         └────┴────┘
-         ┌────┬────┐
-Unicode: │ 4e │ 2d │
-         └────┴────┘
+         ┌────┬────┐GB2312:  │ d6 │ d0 │         └────┴────┘         ┌────┬────┐Unicode: │ 4e │ 2d │         └────┴────┘
 ```
 
 那我们经常使用的`UTF-8`又是什么编码呢？因为英文字符的`Unicode`编码高字节总是`00`，包含大量英文的文本会浪费空间，所以，出现了`UTF-8`编码，它是一种变长编码，用来把固定长度的`Unicode`编码变成1～4字节的变长编码。通过`UTF-8`编码，英文字符`'A'`的`UTF-8`编码变为`0x41`，正好和`ASCII`码一致，而中文`'中'`的`UTF-8`编码为3字节`0xe4b8ad`。
@@ -326,27 +316,13 @@ for (int i = 0; i < 1000; i++) {
 为了能高效拼接字符串，Java标准库提供了`StringBuilder`，它是一个可变对象，可以预分配缓冲区，这样，往`StringBuilder`中新增字符时，不会创建新的临时对象：
 
 ```java
-StringBuilder sb = new StringBuilder(1024);
-for (int i = 0; i < 1000; i++) {
-    sb.append(',');
-    sb.append(i);
-}
-String s = sb.toString();
+StringBuilder sb = new StringBuilder(1024);for (int i = 0; i < 1000; i++) {    sb.append(',');    sb.append(i);}String s = sb.toString();
 ```
 
 `StringBuilder`还可以进行链式操作：
 
 ```java
-public class Main {
-    public static void main(String[] args) {
-        var sb = new StringBuilder(1024);
-        sb.append("Mr ")
-          .append("Bob")
-          .append("!")
-          .insert(0, "Hello, ");
-        System.out.println(sb.toString());
-    }
-}
+public class Main {    public static void main(String[] args) {        var sb = new StringBuilder(1024);        sb.append("Mr ")          .append("Bob")          .append("!")          .insert(0, "Hello, ");        System.out.println(sb.toString());    }}
 ```
 
 如果我们查看`StringBuilder`的源码，可以发现，进行链式操作的关键是，**定义的`append()`方法会返回`this`**，这样，就可以不断调用自身的其他方法。
@@ -450,8 +426,7 @@ public class Main {
 `String`还提供了一个静态方法`join()`，这个方法在内部使用了`StringJoiner`来拼接字符串，在不需要指定“开头”和“结尾”的时候，用`String.join()`更方便：
 
 ```
-String[] names = {"Bob", "Alice", "Grace"};
-var s = String.join(", ", names);
+String[] names = {"Bob", "Alice", "Grace"};var s = String.join(", ", names);
 ```
 
 ---
@@ -466,8 +441,7 @@ var s = String.join(", ", names);
 引用类型可以赋值为`null`，表示空，但基本类型不能赋值为`null`：
 
 ```
-String s = null;
-int n = null; // compile error!
+String s = null;int n = null; // compile error!
 ```
 
 那么，如何把一个基本类型视为对象（引用类型）？
@@ -531,16 +505,13 @@ public class Main {
 因为`int`和`Integer`可以互相转换：
 
 ```
-int i = 100;
-Integer n = Integer.valueOf(i);
-int x = n.intValue();
+int i = 100;Integer n = Integer.valueOf(i);int x = n.intValue();
 ```
 
 所以，Java编译器可以帮助我们自动在`int`和`Integer`之间转型：
 
 ```
-Integer n = 100; // 编译器自动使用Integer.valueOf(int)
-int x = n; // 编译器自动使用Integer.intValue()
+Integer n = 100; // 编译器自动使用Integer.valueOf(int)int x = n; // 编译器自动使用Integer.intValue()
 ```
 
 这种直接把`int`变为`Integer`的赋值写法，称为自动装箱（Auto Boxing），反过来，把`Integer`变为`int`的赋值写法，称为自动拆箱（Auto Unboxing）。
@@ -642,28 +613,13 @@ public class Main {
 Java的包装类型还定义了一些有用的静态变量
 
 ```java
-// boolean只有两个值true/false，其包装类型只需要引用Boolean提供的静态字段:
-Boolean t = Boolean.TRUE;
-Boolean f = Boolean.FALSE;
-// int可表示的最大/最小值:
-int max = Integer.MAX_VALUE; // 2147483647
-int min = Integer.MIN_VALUE; // -2147483648
-// long类型占用的bit和byte数量:
-int sizeOfLong = Long.SIZE; // 64 (bits)
-int bytesOfLong = Long.BYTES; // 8 (bytes)
+// boolean只有两个值true/false，其包装类型只需要引用Boolean提供的静态字段:Boolean t = Boolean.TRUE;Boolean f = Boolean.FALSE;// int可表示的最大/最小值:int max = Integer.MAX_VALUE; // 2147483647int min = Integer.MIN_VALUE; // -2147483648// long类型占用的bit和byte数量:int sizeOfLong = Long.SIZE; // 64 (bits)int bytesOfLong = Long.BYTES; // 8 (bytes)
 ```
 
 最后，所有的整数和浮点数的包装类型都继承自`Number`，因此，可以非常方便地直接通过包装类型获取各种基本类型：
 
 ```java
-// 向上转型为Number:
-Number num = new Integer(999);
-// 获取byte, int, long, float, double:
-byte b = num.byteValue();
-int n = num.intValue();
-long ln = num.longValue();
-float f = num.floatValue();
-double d = num.doubleValue();
+// 向上转型为Number:Number num = new Integer(999);// 获取byte, int, long, float, double:byte b = num.byteValue();int n = num.intValue();long ln = num.longValue();float f = num.floatValue();double d = num.doubleValue();
 ```
 
 ### 处理无符号整型
@@ -713,25 +669,13 @@ Java核心库提供的包装类型可以把基本类型包装为`class`；
 例如：
 
 ```
-public class Person {
-    private String name;
-    private int age;
-
-    public String getName() { return this.name; }
-    public void setName(String name) { this.name = name; }
-
-    public int getAge() { return this.age; }
-    public void setAge(int age) { this.age = age; }
-}
+public class Person {    private String name;    private int age;    public String getName() { return this.name; }    public void setName(String name) { this.name = name; }    public int getAge() { return this.age; }    public void setAge(int age) { this.age = age; }}
 ```
 
 如果读写方法符合以下这种命名规范：
 
 ```java
-// 读方法:
-public Type getXyz()
-// 写方法:
-public void setXyz(Type value)
+// 读方法:public Type getXyz()// 写方法:public void setXyz(Type value)
 ```
 
 那么这种`class`被称为`JavaBean`
@@ -741,10 +685,7 @@ public void setXyz(Type value)
 `boolean`字段比较特殊，它的读方法一般命名为`isXyz()`：
 
 ```java
-// 读方法:
-public boolean isChild()
-// 写方法:
-public void setChild(boolean value)
+// 读方法:public boolean isChild()// 写方法:public void setChild(boolean value)
 ```
 
 我们通常把一组对应的读方法（`getter`）和写方法（`setter`）称为属性（`property`）。例如，`name`属性：
@@ -764,20 +705,7 @@ public void setChild(boolean value)
 属性只需要定义`getter`和`setter`方法，不一定需要对应的字段。例如，`child`只读属性定义如下：
 
 ```java
-public class Person {
-    private String name;
-    private int age;
-
-    public String getName() { return this.name; }
-    public void setName(String name) { this.name = name; }
-
-    public int getAge() { return this.age; }
-    public void setAge(int age) { this.age = age; }
-
-    public boolean isChild() {
-        return age <= 6;
-    }
-}
+public class Person {    private String name;    private int age;    public String getName() { return this.name; }    public void setName(String name) { this.name = name; }    public int getAge() { return this.age; }    public void setAge(int age) { this.age = age; }    public boolean isChild() {        return age <= 6;    }}
 ```
 
 可以看出，`getter`和`setter`也是一种数据封装的方法。
@@ -935,7 +863,7 @@ enum Weekday {
 
 首先，`enum`常量本身带有类型信息，即`Weekday.SUN`类型是`Weekday`，编译器会自动检查出类型错误。例如，下面的语句不可能编译通过：
 
-```
+```java
 int day = 1;
 if (day == Weekday.SUN) { // Compile error: bad operand types for binary operator '=='
 }
@@ -945,9 +873,212 @@ if (day == Weekday.SUN) { // Compile error: bad operand types for binary operato
 
 最后，不同类型的枚举不能互相比较或者赋值，因为类型不符。例如，不能给一个`Weekday`枚举类型的变量赋值为`Color`枚举类型的值：
 
-```
+```java
 Weekday x = Weekday.SUN; // ok!
 Weekday y = Color.RED; // Compile error: incompatible types
 ```
 
 这就使得编译器可以在编译期自动检查出所有可能的潜在错误。
+
+### enum的比较
+
+使用`enum`定义的枚举类是一种引用类型。前面我们讲到，引用类型比较，要使用`equals()`方法，如果使用`==`比较，它比较的是两个引用类型的变量是否是同一个对象。因此，引用类型比较，要始终使用`equals()`方法，但`enum`类型可以例外。
+
+这是因为`enum`类型的每个常量在JVM中只有一个唯一实例，所以可以直接用`==`比较：
+
+```java
+if (day == Weekday.FRI) { // ok!
+}
+if (day.equals(Weekday.SUN)) { // ok, but more code!
+}
+```
+
+### enum类型
+
+通过`enum`定义的枚举类，和其他的`class`有什么区别？
+
+答案是没有任何区别。`enum`定义的类型就是`class`，只不过它有以下几个特点：
+
+- 定义的`enum`类型总是继承自`java.lang.Enum`，且无法被继承；
+- 只能定义出`enum`的实例，而无法通过`new`操作符创建`enum`的实例；
+- 定义的每个实例都是引用类型的唯一实例；
+- 可以将`enum`类型用于`switch`语句。
+
+例如，我们定义的`Color`枚举类：
+
+```java
+public enum Color {
+    RED, GREEN, BLUE;
+}
+```
+
+编译器编译出的`class`大概就像这样：
+
+```java
+public final class Color extends Enum { // 继承自Enum，标记为final class
+    // 每个实例均为全局唯一:
+    public static final Color RED = new Color();
+    public static final Color GREEN = new Color();
+    public static final Color BLUE = new Color();
+    // private构造方法，确保外部无法调用new操作符:
+    private Color() {}
+}
+```
+
+所以，编译后的`enum`类和普通`class`并没有任何区别。但是我们自己无法按定义普通`class`那样来定义`enum`，必须使用`enum`关键字，这是Java语法规定的。
+
+因为`enum`是一个`class`，每个枚举的值都是`class`实例，因此，这些实例有一些方法：
+
+#### name()
+
+返回常量名，例如：
+
+```java
+String s = Weekday.SUN.name(); // "SUN"
+```
+
+#### ordinal()
+
+返回定义的常量的顺序，从0开始计数，例如：·
+
+```java
+int n = Weekday.MON.ordinal(); // 1
+```
+
+改变枚举常量定义的顺序就会导致`ordinal()`返回值发生变化。例如：
+
+```java
+public enum Weekday {
+    SUN, MON, TUE, WED, THU, FRI, SAT;
+}
+```
+
+和
+
+```java
+public enum Weekday {
+    MON, TUE, WED, THU, FRI, SAT, SUN;
+}
+```
+
+的`ordinal`就是不同的。如果在代码中编写了类似`if(x.ordinal()==1)`这样的语句，就要保证`enum`的枚举顺序不能变。新增的常量必须放在最后。
+
+有些童鞋会想，`Weekday`的枚举常量如果要和`int`转换，使用`ordinal()`不是非常方便？比如这样写：
+
+```java
+String task = Weekday.MON.ordinal() + "/ppt";
+saveToFile(task);
+```
+
+但是，如果不小心修改了枚举的顺序，编译器是无法检查出这种逻辑错误的。要编写健壮的代码，就不要依靠`ordinal()`的返回值。因为`enum`本身是`class`，所以我们可以定义`private`的构造方法，并且，给每个枚举常量添加字段：
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Weekday day = Weekday.SUN;
+        if (day.dayValue == 6 || day.dayValue == 0) {
+            System.out.println("Work at home!");
+        } else {
+            System.out.println("Work at office!");
+        }
+    }
+}
+
+enum Weekday {
+    MON(1), TUE(2), WED(3), THU(4), FRI(5), SAT(6), SUN(0);
+
+    public final int dayValue;
+
+    private Weekday(int dayValue) {
+        this.dayValue = dayValue;
+    }
+}
+```
+
+这样就无需担心顺序的变化，新增枚举常量时，也需要指定一个`int`值。
+
+**注意：枚举类的字段也可以是非final类型，即可以在运行期修改，但是不推荐这样做！**
+
+默认情况下，对枚举常量调用`toString()`会返回和`name()`一样的字符串。但是，`toString()`可以被覆写，而`name()`则不行。我们可以给`Weekday`添加`toString()`方法：
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Weekday day = Weekday.SUN;
+        if (day.dayValue == 6 || day.dayValue == 0) {
+            System.out.println("Today is " + day + ". Work at home!");
+        } else {
+            System.out.println("Today is " + day + ". Work at office!");
+        }
+    }
+}
+
+enum Weekday {
+    MON(1, "星期一"), TUE(2, "星期二"), WED(3, "星期三"), THU(4, "星期四"), FRI(5, "星期五"), SAT(6, "星期六"), SUN(0, "星期日");
+
+    public final int dayValue;
+    private final String chinese;
+
+    private Weekday(int dayValue, String chinese) {
+        this.dayValue = dayValue;
+        this.chinese = chinese;
+    }
+
+    @Override
+    public String toString() {
+        return this.chinese;
+    }
+}
+```
+
+覆写`toString()`的目的是在输出时更有可读性。
+
+注意：判断枚举常量的名字，要始终使用name()方法，绝不能调用toString()！
+
+#### switch
+
+最后，枚举类可以应用在`switch`语句中。因为枚举类天生具有类型信息和有限个枚举常量，所以比`int`、`String`类型更适合用在`switch`语句中：
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Weekday day = Weekday.SUN;
+        switch(day) {
+        case MON:
+        case TUE:
+        case WED:
+        case THU:
+        case FRI:
+            System.out.println("Today is " + day + ". Work at office!");
+            break;
+        case SAT:
+        case SUN:
+            System.out.println("Today is " + day + ". Work at home!");
+            break;
+        default:
+            throw new RuntimeException("cannot process " + day);
+        }
+    }
+}
+
+enum Weekday {
+    MON, TUE, WED, THU, FRI, SAT, SUN;
+}
+```
+
+加上`default`语句，可以在漏写某个枚举常量时自动报错，从而及时发现错误。
+
+### 小结
+
+Java使用`enum`定义枚举类型，它被编译器编译为`final class Xxx extends Enum { … }`；
+
+通过`name()`获取常量定义的字符串，注意不要使用`toString()`；
+
+通过`ordinal()`返回常量定义的顺序（无实质意义）；
+
+可以为`enum`编写构造方法、字段和方法
+
+`enum`的构造方法要声明为`private`，字段强烈建议声明为`final`；
+
+`enum`适合用在`switch`语句中。
+
