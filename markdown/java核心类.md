@@ -1082,3 +1082,498 @@ Java使用`enum`定义枚举类型，它被编译器编译为`final class Xxx ex
 
 `enum`适合用在`switch`语句中。
 
+---
+
+## 记录类
+
+使用`String`、`Integer`等类型的时候，这些类型都是不变类，一个不变类具有以下特点：
+
+1. 定义class时使用`final`，无法派生子类；
+2. 每个字段使用`final`，保证创建实例后无法修改任何字段。
+
+假设我们希望定义一个`Point`类，有`x`、`y`两个变量，同时它是一个不变类，可以这么写：
+
+```java
+public final class Point {
+    private final int x;
+    private final int y;
+
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public int x() {
+        return this.x;
+    }
+
+    public int y() {
+        return this.y;
+    }
+}
+```
+
+为了保证不变类的比较，还需要正确覆写`equals()`和`hashCode()`方法，这样才能在集合类中正常使用。后续我们会详细讲解正确覆写`equals()`和`hashCode()`，这里演示`Point`不变类的写法目的是，这些代码写起来都非常简单，但是很繁琐。
+
+### record
+
+从Java 14开始，引入了新的`Record`类。我们定义`Record`类时，使用关键字`record`。把上述`Point`类改写为`Record`类，代码如下：
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Point p = new Point(123, 456); 
+        System.out.println(p.x());    //123
+        System.out.println(p.y());    //456
+        System.out.println(p);       //Point[x=123, y=456]
+    }
+}
+
+public record Point(int x, int y) {}
+```
+
+仔细观察`Point`的定义：
+
+```java
+public record Point(int x, int y) {}
+```
+
+把上述定义改写为class，相当于以下代码：
+
+```java
+public final class Point extends Record {
+    private final int x;
+    private final int y;
+
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public int x() {
+        return this.x;
+    }
+
+    public int y() {
+        return this.y;
+    }
+
+    public String toString() {
+        return String.format("Point[x=%s, y=%s]", x, y);
+    }
+
+    public boolean equals(Object o) {
+        ...
+    }
+    public int hashCode() {
+        ...
+    }
+}
+```
+
+除了用`final`修饰class以及每个字段外，编译器还自动为我们创建了构造方法，和字段名同名的方法，以及覆写`toString()`、`equals()`和`hashCode()`方法。
+
+换句话说，使用`record`关键字，可以一行写出一个不变类。
+
+和`enum`类似，我们自己不能直接从`Record`派生，只能通过`record`关键字由编译器实现继承。
+
+### 构造方法
+
+编译器默认按照`record`声明的变量顺序自动创建一个构造方法，并在方法内给字段赋值。那么问题来了，如果我们要检查参数，应该怎么办？
+
+假设`Point`类的`x`、`y`不允许负数，我们就得给`Point`的构造方法加上检查逻辑：
+
+```java
+public record Point(int x, int y) {
+    public Point {
+        if (x < 0 || y < 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+}
+```
+
+注意到方法`public Point {...}`被称为Compact Constructor，它的目的是让我们编写检查逻辑，编译器最终生成的构造方法如下：
+
+```java
+public final class Point extends Record {
+    public Point(int x, int y) {
+        // 这是我们编写的Compact Constructor:
+        if (x < 0 || y < 0) {
+            throw new IllegalArgumentException();
+        }
+        // 这是编译器继续生成的赋值代码:
+        this.x = x;
+        this.y = y;
+    }
+    ...
+}
+```
+
+作为`record`的`Point`仍然可以添加静态方法。一种常用的静态方法是`of()`方法，用来创建`Point`：
+
+```java
+public record Point(int x, int y) {
+    public static Point of() {
+        return new Point(0, 0);
+    }
+    public static Point of(int x, int y) {
+        return new Point(x, y);
+    }
+}
+```
+
+这样我们可以写出更简洁的代码：
+
+```java
+var z = Point.of();
+var p = Point.of(123, 456);
+```
+
+### 小结
+
+从Java 14开始，提供新的`record`关键字，可以非常方便地定义Data Class：
+
+- 使用`record`定义的是不变类；
+- 可以编写Compact Constructor对参数进行验证；
+- 可以定义静态方法。
+
+## BigInteger
+
+在Java中，由CPU原生提供的整型最大范围是64位`long`型整数。使用`long`型整数可以直接通过CPU指令进行计算，速度非常快。
+
+如果我们使用的整数范围超过了`long`型怎么办？这个时候，就只能用软件来模拟一个大整数。`java.math.BigInteger`就是用来表示任意大小的整数。`BigInteger`内部用一个`int[]`数组来模拟一个非常大的整数：
+
+```java
+BigInteger bi = new BigInteger("1234567890");
+System.out.println(bi.pow(5)); // 2867971860299718107233761438093672048294900000
+```
+
+对`BigInteger`做运算的时候，只能使用实例方法，例如，加法运算：
+
+```java
+BigInteger i1 = new BigInteger("1234567890");
+BigInteger i2 = new BigInteger("12345678901234567890");
+BigInteger sum = i1.add(i2); // 12345678902469135780
+```
+
+和`long`型整数运算比，`BigInteger`不会有范围限制，但缺点是速度比较慢。
+
+也可以把`BigInteger`转换成`long`型：
+
+```java
+BigInteger i = new BigInteger("123456789000");
+System.out.println(i.longValue()); // 123456789000
+System.out.println(i.multiply(i).longValueExact()); // java.lang.ArithmeticException: BigInteger out of long range
+```
+
+使用`longValueExact()`方法时，如果超出了`long`型的范围，会抛出`ArithmeticException`。
+
+`BigInteger`和`Integer`、`Long`一样，也是不可变类，并且也继承自`Number`类。因为`Number`定义了转换为基本类型的几个方法：
+
+- 转换为`byte`：`byteValue()`
+- 转换为`short`：`shortValue()`
+- 转换为`int`：`intValue()`
+- 转换为`long`：`longValue()`
+- 转换为`float`：`floatValue()`
+- 转换为`double`：`doubleValue()`
+
+因此，通过上述方法，可以把`BigInteger`转换成基本类型。如果`BigInteger`表示的范围超过了基本类型的范围，转换时将丢失高位信息，即结果不一定是准确的。如果需要准确地转换成基本类型，可以使用`intValueExact()`、`longValueExact()`等方法，在转换时如果超出范围，将直接抛出`ArithmeticException`异常。
+
+如果`BigInteger`的值甚至超过了`float`的最大范围（3.4x1038），那么返回的float是什么呢？
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        BigInteger n = new BigInteger("999999").pow(99);
+        float f = n.floatValue();
+        System.out.println(f);
+    }
+}
+```
+
+### 小结
+
+`BigInteger`用于表示任意大小的整数；
+
+`BigInteger`是不变类，并且继承自`Number`；
+
+将`BigInteger`转换成基本类型时可使用`longValueExact()`等方法保证结果准确。
+
+---
+
+## BigDecimal
+
+和`BigInteger`类似，`BigDecimal`可以表示一个任意大小且精度完全准确的浮点数。
+
+```java
+BigDecimal bd = new BigDecimal("123.4567");
+System.out.println(bd.multiply(bd)); // 15241.55677489
+```
+
+`BigDecimal`用`scale()`表示小数位数，例如：
+
+```java
+BigDecimal d1 = new BigDecimal("123.45");
+BigDecimal d2 = new BigDecimal("123.4500");
+BigDecimal d3 = new BigDecimal("1234500");
+System.out.println(d1.scale()); // 2,两位小数
+System.out.println(d2.scale()); // 4
+System.out.println(d3.scale()); // 0
+```
+
+通过`BigDecimal`的`stripTrailingZeros()`方法，可以将一个`BigDecimal`格式化为一个相等的，但去掉了末尾0的`BigDecimal`：
+
+```java
+BigDecimal d1 = new BigDecimal("123.4500");
+BigDecimal d2 = d1.stripTrailingZeros();
+System.out.println(d1.scale()); // 4
+System.out.println(d2.scale()); // 2,因为去掉了00
+
+BigDecimal d3 = new BigDecimal("1234500");
+BigDecimal d4 = d3.stripTrailingZeros();
+System.out.println(d3.scale()); // 0
+System.out.println(d4.scale()); // -2
+```
+
+如果一个`BigDecimal`的`scale()`返回负数，例如，`-2`，表示这个数是个整数，并且末尾有2个0。
+
+可以对一个`BigDecimal`设置它的`scale`，如果精度比原始值低，那么按照指定的方法进行四舍五入或者直接截断：对`BigDecimal`做加、减、乘时，精度不会丢失，但是做除法时，存在无法除尽的情况，这时，就必须指定精度以及如何进行截断：
+
+```java
+BigDecimal d1 = new BigDecimal("123.456");
+BigDecimal d2 = new BigDecimal("23.456789");
+BigDecimal d3 = d1.divide(d2, 10, RoundingMode.HALF_UP); // 保留10位小数并四舍五入
+BigDecimal d4 = d1.divide(d2); // 报错：ArithmeticException，因为除不尽
+```
+
+还可以对`BigDecimal`做除法的同时求余数：
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        BigDecimal n = new BigDecimal("12.345");
+        BigDecimal m = new BigDecimal("0.12");
+        BigDecimal[] dr = n.divideAndRemainder(m);
+        System.out.println(dr[0]); // 102
+        System.out.println(dr[1]); // 0.105
+    }
+}
+```
+
+调用`divideAndRemainder()`方法时，返回的数组包含两个`BigDecimal`，分别是商和余数，其中商总是整数，余数不会大于除数。我们可以利用这个方法判断两个`BigDecimal`是否是整数倍数：
+
+```java
+BigDecimal n = new BigDecimal("12.75");
+BigDecimal m = new BigDecimal("0.15");
+BigDecimal[] dr = n.divideAndRemainder(m);
+if (dr[1].signum() == 0) {
+    // n是m的整数倍
+}
+```
+
+### 比较BigDecimal
+
+在比较两个`BigDecimal`的值是否相等时，要特别注意，使用`equals()`方法不但要求两个`BigDecimal`的值相等，还要求它们的`scale()`相等：
+
+```
+BigDecimal d1 = new BigDecimal("123.456");
+BigDecimal d2 = new BigDecimal("123.45600");
+System.out.println(d1.equals(d2)); // false,因为scale不同
+System.out.println(d1.equals(d2.stripTrailingZeros())); // true,因为d2去除尾部0后scale变为2
+System.out.println(d1.compareTo(d2)); // 0
+```
+
+必须使用`compareTo()`方法来比较，它根据两个值的大小分别返回负数、正数和`0`，分别表示小于、大于和等于。
+
+ 总是使用compareTo()比较两个BigDecimal的值，不要使用equals()！
+
+如果查看`BigDecimal`的源码，可以发现，实际上一个`BigDecimal`是通过一个`BigInteger`和一个`scale`来表示的，即`BigInteger`表示一个完整的整数，而`scale`表示小数位数：
+
+```
+public class BigDecimal extends Number implements Comparable<BigDecimal> {
+    private final BigInteger intVal;
+    private final int scale;
+}
+```
+
+`BigDecimal`也是从`Number`继承的，也是不可变对象。
+
+### 小结
+
+`BigDecimal`用于表示精确的小数，常用于财务计算；
+
+比较`BigDecimal`的值是否相等，必须使用`compareTo()`而不能使用`equals()`。
+
+---
+
+## 常用工具类
+
+Java的核心库提供了大量的现成的类供我们使用。本节我们介绍几个常用的工具类。
+
+### Math
+
+顾名思义，`Math`类就是用来进行数学计算的，它提供了大量的静态方法来便于我们实现数学计算：
+
+求绝对值：
+
+```java
+Math.abs(-100); // 100
+Math.abs(-7.8); // 7.8
+```
+
+取最大或最小值：
+
+```java
+Math.max(100, 99); // 100
+Math.min(1.2, 2.3); // 1.2
+```
+
+计算xy次方：
+
+```java
+Math.pow(2, 10); // 2的10次方=1024
+```
+
+计算√x：
+
+```java
+Math.sqrt(2); // 1.414...
+```
+
+计算ex次方：
+
+```java
+Math.exp(2); // 7.389...
+```
+
+计算以e为底的对数：
+
+```java
+Math.log(4); // 1.386...
+```
+
+计算以10为底的对数：
+
+```java
+Math.log10(100); // 2
+```
+
+三角函数：
+
+```java
+Math.sin(3.14); // 0.00159...
+Math.cos(3.14); // -0.9999...
+Math.tan(3.14); // -0.0015...
+Math.asin(1.0); // 1.57079...
+Math.acos(1.0); // 0.0
+```
+
+Math还提供了几个数学常量：
+
+```java
+double pi = Math.PI; // 3.14159...
+double e = Math.E; // 2.7182818...
+Math.sin(Math.PI / 6); // sin(π/6) = 0.5
+```
+
+生成一个随机数x，x的范围是`0 <= x < 1`：
+
+```java
+Math.random(); // 0.53907... 每次都不一样
+```
+
+如果我们要生成一个区间在`[MIN, MAX)`的随机数，可以借助`Math.random()`实现，计算如下：
+
+```java
+// 区间在[MIN, MAX)的随机数
+public class Main {
+    public static void main(String[] args) {
+        double x = Math.random(); // x的范围是[0,1)
+        double min = 10;
+        double max = 50;
+        double y = x * (max - min) + min; // y的范围是[10,50)
+        long n = (long) y; // n的范围是[10,50)的整数
+        System.out.println(y);
+        System.out.println(n);
+    }
+}
+```
+
+有些童鞋可能注意到Java标准库还提供了一个`StrictMath`，它提供了和`Math`几乎一模一样的方法。这两个类的区别在于，由于浮点数计算存在误差，不同的平台（例如x86和ARM）计算的结果可能不一致（指误差不同），因此，`StrictMath`保证所有平台计算结果都是完全相同的，而`Math`会尽量针对平台优化计算速度，所以，绝大多数情况下，使用`Math`就足够了。
+
+### Random
+
+`Random`用来创建伪随机数。所谓伪随机数，是指只要给定一个初始的种子，产生的随机数序列是完全一样的。
+
+要生成一个随机数，可以使用`nextInt()`、`nextLong()`、`nextFloat()`、`nextDouble()`：
+
+```java
+Random r = new Random();
+r.nextInt(); // 2071575453,每次都不一样
+r.nextInt(10); // 5,生成一个[0,10)之间的int
+r.nextLong(); // 8811649292570369305,每次都不一样
+r.nextFloat(); // 0.54335...生成一个[0,1)之间的float
+r.nextDouble(); // 0.3716...生成一个[0,1)之间的double
+```
+
+有童鞋问，每次运行程序，生成的随机数都是不同的，没看出*伪随机数*的特性来。
+
+这是因为我们创建`Random`实例时，如果不给定种子，就使用系统当前时间戳作为种子，因此每次运行时，种子不同，得到的伪随机数序列就不同。
+
+如果我们在创建`Random`实例时指定一个种子，就会得到完全确定的随机数序列：
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Random r = new Random(12345);
+        for (int i = 0; i < 10; i++) {
+            System.out.println(r.nextInt(100));
+        }
+        // 51, 80, 41, 28, 55...
+    }
+}
+```
+
+前面我们使用的`Math.random()`实际上内部调用了`Random`类，所以它也是伪随机数，只是我们无法指定种子。
+
+### SecureRandom
+
+有伪随机数，就有真随机数。实际上真正的真随机数只能通过量子力学原理来获取，而我们想要的是一个不可预测的安全的随机数，`SecureRandom`就是用来创建安全的随机数的：
+
+```java
+SecureRandom sr = new SecureRandom();
+System.out.println(sr.nextInt(100));
+```
+
+`SecureRandom`无法指定种子，它使用RNG（random number generator）算法。JDK的`SecureRandom`实际上有多种不同的底层实现，有的使用安全随机种子加上伪随机数算法来产生安全的随机数，有的使用真正的随机数生成器。实际使用的时候，可以优先获取高强度的安全随机数生成器，如果没有提供，再使用普通等级的安全随机数生成器：
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        SecureRandom sr = null;
+        try {
+            sr = SecureRandom.getInstanceStrong(); // 获取高强度安全随机数生成器
+        } catch (NoSuchAlgorithmException e) {
+            sr = new SecureRandom(); // 获取普通的安全随机数生成器
+        }
+        byte[] buffer = new byte[16];
+        sr.nextBytes(buffer); // 用安全随机数填充buffer
+        System.out.println(Arrays.toString(buffer));
+    }
+}
+```
+
+`SecureRandom`的安全性是通过操作系统提供的安全的随机种子来生成随机数。这个种子是通过CPU的热噪声、读写磁盘的字节、网络流量等各种随机事件产生的“熵”。
+
+在密码学中，安全的随机数非常重要。如果使用不安全的伪随机数，所有加密体系都将被攻破。因此，时刻牢记必须使用`SecureRandom`来产生安全的随机数。
+
+ 需要使用安全随机数的时候，必须使用SecureRandom，绝不能使用Random！
+
+### 小结
+
+Java提供的常用工具类有：
+
+- Math：数学计算
+- Random：生成伪随机数
+- SecureRandom：生成安全的随机数
