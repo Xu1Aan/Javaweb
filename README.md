@@ -16,9 +16,16 @@ Java后端、前端学习资料，最近将逐渐整理一些java面试基础知
   - [java核心类](./markdown/java核心类.md)
 - [x] 异常处理
   - [异常处理](./markdown/异常处理.md)
-
-- [ ] 反射
-  - 反射
+- [x] 反射
+  - [反射](./markdown/反射.md)
+- [x] 注解
+  - [注解](./markdown/注解.md)
+- [x] 泛型
+  - [泛型](./markdown/泛型.md)
+- [x] 集合
+  - [集合](./markdown/集合)
+- [ ] IO
+  - IO
 
 ---
 
