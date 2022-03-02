@@ -24,8 +24,10 @@ Java后端、前端学习资料，最近将逐渐整理一些java面试基础知
   - [泛型](./markdown/泛型.md)
 - [x] 集合
   - [集合](./markdown/集合.md)
-- [ ] IO
-  - IO
+- [x] IO
+  - [IO](./markdown/IO.md)
+- [x] 线程
+  - [线程](./markdown/线程.md)
 
 ---
 
