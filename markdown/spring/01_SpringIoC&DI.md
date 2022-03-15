@@ -165,6 +165,13 @@ scope:指对象的作用范围，取值如下：
 
 对象销毁：当对象长时间不用时，被 Java 的垃圾回收器回收了
 
+```xml
+<!--  #Bean标签的范围配置，Scope对象的作文范围： singleton：默认值，单例的；prototype：多例的 
+    <bean id="userDao" class="com.xu1an.dao.impl.UserDaoImpl" scope="prototype"></bean>
+    -->
+    <bean id="userDao" class="com.xu1an.dao.impl.UserDaoImpl"></bean>
+```
+
 ### 3.3 Bean生命周期配置
 
 init-method：指定类中的初始化方法名称

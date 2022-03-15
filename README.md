@@ -3,7 +3,9 @@
 ---
 Java后端、前端学习资料，最近将逐渐整理一些java面试基础知识、框架要点。大厂，冲冲冲！
 
-**学习资料**
+## **学习资料整理**
+
+### **Java基础**
 
 - [x] git快速入门
   - [git快速入门及详细用法](./markdown/git用法.md)
@@ -28,10 +30,20 @@ Java后端、前端学习资料，最近将逐渐整理一些java面试基础知
   - [IO](./markdown/IO.md)
 - [x] 线程
   - [线程](./markdown/线程.md)
+- [x] 函数式编程
+  - [函数式编程]()
 
 ---
 
-**参考文献**
+### 主要框架
+
+- [ ] Spring
+  - [SpringIoc&DI(反转控制和依赖注入)](./markdown/spring/01_SpringIoC&DI.md)
+  - [SpringIoC&DI注解开发](./markdown/spring/02_SpringIoC和DI注解开发.md)
+
+---
+
+### 参考资料
 
 - 狂神聊Git：https://mp.weixin.qq.com/s/Bf7uVhGiu47uOELjmC5uXQ
 
@@ -39,3 +51,4 @@ Java后端、前端学习资料，最近将逐渐整理一些java面试基础知
 
 - 菜鸟教程：https://www.runoob.com/java/java-tutorial.html 
 
+- 黑马程序员：https://space.bilibili.com/37974444?from=search&seid=9827860770757369580&spm_id_from=333.337.0.0
