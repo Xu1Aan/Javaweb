@@ -573,11 +573,33 @@ public class UserDaoImpl implements UserDao {
 <import resource="applicationContext-xxx.xml"/>
 ```
 
+### 3.10 Spring的重点配置小结
+
+```
+<bean>标签
+    id属性:在容器中Bean实例的唯一标识，不允许重复
+    class属性:要实例化的Bean的全限定名
+    scope属性:Bean的作用范围，常用是Singleton(默认)和prototype
+    <property>标签：属性注入
+        name属性：属性名称
+        value属性：注入的普通属性值
+        ref属性：注入的对象引用值
+        <list>标签
+        <map>标签
+        <properties>标签
+    <constructor-arg>标签
+<import>标签:导入其他的Spring的分文件
+```
+
+
+
 ## 4. spring相关API
 
 ### 4.1 ApplicationContext的继承体系
 
 applicationContext：接口类型，代表应用上下文，可以通过其实例获得 Spring 容器中的 Bean 对象
+
+<img src=".\img\applicationContext继承体系.png" style="zoom:150%;" />
 
 ### 4.2 ApplicationContext的实现类
 
@@ -595,6 +617,12 @@ applicationContext：接口类型，代表应用上下文，可以通过其实�
 
 ### 4.3 getBean()方法使用
 
+源码：
+
+1、通过xml文件中的id获取
+
+2、通过反射机制获取(class)
+
 ```java
 public Object getBean(String name) throws BeansException {  
 	assertBeanFactoryActive();   
@@ -605,9 +633,9 @@ public <T> T getBean(Class<T> requiredType) throws BeansException {   			    	as
 }
 ```
 
-其中，当参数的数据类型是字符串时，表示根据Bean的id从容器中获得Bean实例，返回是Object，需要强转。
+其中，1、当参数的数据类型是字符串时，表示根据Bean的id从容器中获得Bean实例，返回是Object，**需要强转**。
 
-当参数的数据类型是Class类型时，表示根据类型从容器中匹配Bean实例，当容器中相同类型的Bean有多个时，则此方法会报错
+2、当参数的数据类型是Class类型时，表示根据类型从容器中匹配Bean实例，当容器中相同类型的Bean**有多个时**，则此方法会报错
 
 **getBean()方法使用**
 
@@ -672,6 +700,21 @@ ApplicationContext applicationContext = new
     <artifactId>mysql-connector-java</artifactId>
     <version>5.1.39</version>
 </dependency>
+```
+
+注意mysql 8.0以上的
+
+```
+<!-- 数据库驱动 -->
+<dependency>
+<groupId>mysql</groupId>
+<artifactId>mysql-connector-java</artifactId>
+<version>8.0.11</version>
+</dependency>
+
+2.修改驱动连接
+driver-class-name: com.mysql.cj.jdbc.Driver
+url:jdbc:mysql://localhost:3306/test?serverTimezone=UTC
 ```
 
 ②创建C3P0连接池
@@ -971,7 +1014,8 @@ public DataSource getDataSource() throws PropertyVetoException {
 @Test
 public void testAnnoConfiguration() throws Exception {
 ApplicationContext applicationContext = new 
-          AnnotationConfigApplicationContext(SpringConfiguration.class);    UserService userService = (UserService)    
+          AnnotationConfigApplicationContext(SpringConfiguration.class);    
+    UserService userService = (UserService)    
     applicationContext.getBean("userService");
     userService.save();
     DataSource dataSource = (DataSource) 

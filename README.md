@@ -39,7 +39,8 @@ Java后端、前端学习资料，最近将逐渐整理一些java面试基础知
 
 - [ ] Spring
   - [SpringIoc&DI(反转控制和依赖注入)](./markdown/spring/01_SpringIoC&DI.md)
-  - [SpringIoC&DI注解开发](./markdown/spring/02_SpringIoC和DI注解开发.md)
+  - [SpringAOP(面向切面编程)](./markdown/spring/02_springAOP.md)
+  - [Spring_JdbcTemplate&声明式事务](./markdown/spring/03_Spring JdbcTemplate&声明式事务.md)
 
 ---
 
