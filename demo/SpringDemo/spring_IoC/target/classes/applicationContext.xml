@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+<!--  #Bean标签的范围配置，Scope对象的作文范围： singleton：默认值，单例的；prototype：多例的
+	<bean id="userDao" class="com.xu1an.dao.impl.UserDaoImpl" scope="singleton"></bean>
+    <bean id="userDao" class="com.xu1an.dao.impl.UserDaoImpl" scope="prototype"></bean>
+    -->
+
+<!-- #Bean的初始化和销毁方法
+    <bean id="userDao" class="com.xu1an.dao.impl.UserDaoImpl" init-method="init" destroy-method="destroy"></bean>-->
+
+<!-- Bean实例化的三种方式   -->
+<!-- 1、无参构造方法实例化-->
+<!--    <bean id="userDao" class="com.xu1an.dao.impl.UserDaoImpl"></bean>-->
+<!-- 2、工厂静态方法实例化-->
+<!--    <bean id="userDao" class="com.xu1an.factory.StaticFactory" factory-method="getUserDao"></bean>-->
+<!-- 3、工厂实例方法实例化-->
+<!--    <bean id="factory" class="com.xu1an.factory.DynamicFactory"></bean>-->
+<!--    <bean id="userDao" factory-bean="factory" factory-method="getUserDao"></bean>-->
+
+<!-- Bean依赖注入的两种方式-->
+<!--    <bean id="userDao" class="com.xu1an.dao.impl.UserDaoImpl"></bean>-->
+    <bean id="userService" class="com.xu1an.service.impl.UserServiceImpl" >
+<!-- 1、有参构造方法注入-->
+        <constructor-arg name="userDao" ref="userDao"></constructor-arg>
+<!-- 2、set方法注入-->
+<!--        <property name="userDao" ref="userDao"/>-->
+    </bean>
+<!--    set p命名空间注入-->
+<!--    <bean id="userService" class="com.xu1an.service.impl.UserServiceImpl" p:userDao-ref="userDao"/>-->
+
+<!-- 三种数据类型依赖注入-->
+<!-- 1、普通数据类型注入-->
+<!--    <bean id="userDao" class="com.xu1an.dao.impl.UserDaoImpl" >-->
+<!--        <property name="name" value="xu1an"></property>-->
+<!--        <property name="age" value="22"></property>-->
+<!--    </bean>-->
+<!-- 2、集合数据类型(list<String)注入-->
+<!--    <bean id="userDao" class="com.xu1an.dao.impl.UserDaoImpl">-->
+<!--        <property name="names">-->
+<!--            <list>-->
+<!--                <value>xu1an</value>-->
+<!--                <value>xu2an</value>-->
+<!--                <value>xu3an</value>-->
+<!--            </list>-->
+<!--        </property>-->
+<!--    </bean>-->
+<!-- 3、集合数据类型（List<User>）注入-->
+<!--    <bean id="u1" class="com.xu1an.domain.User"></bean>-->
+<!--    <bean id="u2" class="com.xu1an.domain.User"></bean>-->
+<!--    <bean id="userDao" class="com.xu1an.dao.impl.UserDaoImpl">-->
+<!--        <property name="users">-->
+<!--            <list>-->
+<!--                <bean class="com.xu1an.domain.User"></bean>-->
+<!--                <bean class="com.xu1an.domain.User"></bean>-->
+<!--                <ref bean="u1"></ref>-->
+<!--                <ref bean="u2"></ref>-->
+<!--            </list>-->
+<!--        </property>-->
+<!--    </bean>-->
+<!-- 4、集合数据类型（ Map<String,User> ）注入-->
+<!--    <bean id="u1" class="com.xu1an.domain.User"></bean>-->
+<!--    <bean id="u2" class="com.xu1an.domain.User"></bean>-->
+<!--    <bean id="userDao" class="com.xu1an.dao.impl.UserDaoImpl">-->
+<!--        <property name="userMap">-->
+<!--            <map>-->
+<!--                <entry key="xu1an" value-ref="u1"></entry>-->
+<!--                <entry key="xu2an" value-ref="u2"></entry>-->
+<!--            </map>-->
+<!--        </property>-->
+<!--    </bean>-->
+<!-- 5、集合数据类型（Properties）注入-->
+    <bean id="userDao" class="com.xu1an.dao.impl.UserDaoImpl">
+        <property name="properties">
+            <props>
+                <prop key="p1">aaa</prop>
+                <prop key="p2">bbb</prop>
+                <prop key="p3">ccc</prop>
+            </props>
+        </property>
+    </bean>
+</beans>
