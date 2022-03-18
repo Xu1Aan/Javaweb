@@ -24,7 +24,7 @@ JDK 代理 : 基于接口的动态代理技术
 
 cglib 代理：基于父类的动态代理技术
 
-![](img\图片1.png)
+![](.\img\1.png)
 
 #### 1.5 JDK 的动态代理
 
@@ -73,7 +73,7 @@ TargetInterface proxy = (TargetInterface) Proxy.newProxyInstance(target.getClass
 proxy.method();
 ```
 
-![](img\图片2.png)
+![](img\2.png)
 
 #### 1.6 cglib 的动态代理
 
@@ -136,10 +136,6 @@ Spring 的 AOP 实现底层就是对上面的动态代理的代码进行了封�
 
 - Weaving（织入）：是指把增强应用到目标对象来创建新的代理对象的过程。spring采用动态代理织入，而AspectJ采用编译期织入和类装载期织入
 
-1.8 AOP 开发明确的事项
-
-1.8 AOP 开发明确的事项
-
 #### 1.8 AOP 开发明确的事项
 
 ##### 1)需要编写的内容
@@ -158,6 +154,10 @@ Spring 框架监控切入点方法的执行。一旦监控到切入点方法被�
 
 在 spring 中，框架会根据目标类是否实现了接口来决定采用哪种动态代理的方式。
 
+有接口 ： jdk动态代理
+
+无接口： cglib动态代理
+
 #### 1.9 知识要点
 
 - aop：面向切面编程
@@ -167,24 +167,63 @@ Spring 框架监控切入点方法的执行。一旦监控到切入点方法被�
 - aop的重点概念：
 
         Pointcut（切入点）：被增强的方法
-
+    
         Advice（通知/ 增强）：封装增强业务逻辑的方法
-
+    
         Aspect（切面）：切点+通知
-
+    
         Weaving（织入）：将切点与通知结合的过程
 
 - 开发明确事项：
 
         谁是切点（切点表达式配置）
-
+        
         谁是通知（切面类中的增强方法）
-
+        
         将切点和通知进行织入配置
+
+`application`配置：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+<!-- 目标对象-->
+    <bean id="target" class="com.xu1an.aop.Target"></bean>
+
+<!-- 切面对象-->
+    <bean id="myAspect" class="com.xu1an.aop.MyAspect"/>
+
+<!-- 配置织入： 告诉spring框架 哪些方法（切点）需要进行增强（前置、后置...）-->
+    <aop:config>
+        <!-- 声明切面-->
+        <aop:aspect ref="myAspect">
+            <!-- 抽取切点表达式-->
+            <aop:pointcut id="myPoint" expression="execution(* com.xu1an.aop.*.*(..))"/>
+            <!-- 切面：切点+通知-->
+            <!-- <aop:before method="before" pointcut="execution(public void com.xu1an.aop.Target.save())"></aop:before>-->
+            <!-- <aop:before method="before" pointcut="execution(* com.xu1an.aop.*.*(..))"></aop:before>-->
+            <!-- <aop:after-returning method="afterReturning" pointcut="execution(* com.xu1an.aop.*.*(..))"></aop:after-returning>-->
+            <!-- <aop:around method="around" pointcut="execution(* com.xu1an.aop.*.*(..))"></aop:around>-->
+            <!-- <aop:after-throwing method="afterThrowing" pointcut="execution(* com.xu1an.aop.*.*(..))"></aop:after-throwing>-->
+            <!-- <aop:after method="after" pointcut="execution(* com.xu1an.aop.*.*(..))"></aop:after>-->
+            <aop:around method="around" pointcut-ref="myPoint"></aop:around>
+        </aop:aspect>
+    </aop:config>
+
+</beans>
+```
+
+
 
 ### 2. 基于 XML 的 AOP 开发
 
 #### 2.1 快速入门
+
+**步骤：**
 
 ①导入 AOP 相关坐标
 
@@ -198,9 +237,7 @@ Spring 框架监控切入点方法的执行。一旦监控到切入点方法被�
 
 ⑥测试代码
 
-
-
-
+**实践：**
 
 ①导入 AOP 相关坐标
 
@@ -249,9 +286,9 @@ public class MyAspect {
 
 ```xml
 <!--配置目标类-->
-<bean id="target" class="com.itheima.aop.Target"></bean>
+<bean id="target" class="com.xu1an.aop.Target"></bean>
 <!--配置切面类-->
-<bean id="myAspect" class="com.itheima.aop.MyAspect"></bean>
+<bean id="myAspect" class="com.xu1an.aop.MyAspect"></bean>
 
 ```
 
@@ -283,7 +320,7 @@ public class MyAspect {
     <!--引用myAspect的Bean为切面对象-->
     <aop:aspect ref="myAspect">
         <!--配置Target的method方法执行时要进行myAspect的before方法前置增强-->
-        <aop:before method="before" pointcut="execution(public void com.itheima.aop.Target.method())"></aop:before>
+        <aop:before method="before" pointcut="execution(public void com.xu1an.aop.Target.method())"></aop:before>
     </aop:aspect>
 </aop:config>
 ```
@@ -328,10 +365,10 @@ execution([修饰符] 返回值类型 包名.类名.方法名(参数))
 例如：
 
 ```xml
-execution(public void com.itheima.aop.Target.method())	
-execution(void com.itheima.aop.Target.*(..))
-execution(* com.itheima.aop.*.*(..))
-execution(* com.itheima.aop..*.*(..))
+execution(public void com.xu1an.aop.Target.method())	
+execution(void com.xu1an.aop.Target.*(..))
+execution(* com.xu1an.aop.*.*(..))
+execution(* com.xu1an.aop..*.*(..))
 execution(* *..*.*(..))
 ```
 
@@ -353,7 +390,7 @@ execution(* *..*.*(..))
 <aop:config>
     <!--引用myAspect的Bean为切面对象-->
     <aop:aspect ref="myAspect">
-        <aop:pointcut id="myPointcut" expression="execution(* com.itheima.aop.*.*(..))"/>
+        <aop:pointcut id="myPointcut" expression="execution(* com.xu1an.aop.*.*(..))"/>
         <aop:before method="before" pointcut-ref="myPointcut"></aop:before>
     </aop:aspect>
 </aop:config>
@@ -448,7 +485,7 @@ public class MyAspect {
 @Component("myAspect")
 @Aspect
 public class MyAspect {
-    @Before("execution(* com.itheima.aop.*.*(..))")
+    @Before("execution(* com.xu1an.aop.*.*(..))")
     public void before(){
         System.out.println("前置代码增强.....");
     }
@@ -459,7 +496,7 @@ public class MyAspect {
 
 ```xml
 <!--组件扫描-->
-<context:component-scan base-package="com.itheima.aop"/>
+<context:component-scan base-package="com.xu1an.aop"/>
 
 <!--aop的自动代理-->
 <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
@@ -506,7 +543,7 @@ public class MyAspect {
     public void before(){
         System.out.println("前置代码增强.....");
     }
-    @Pointcut("execution(* com.itheima.aop.*.*(..))")
+    @Pointcut("execution(* com.xu1an.aop.*.*(..))")
     public void myPoint(){}
 }
 ```
@@ -529,7 +566,7 @@ public class MyAspect {
 
 
 
-    
+​    
 
 
 
