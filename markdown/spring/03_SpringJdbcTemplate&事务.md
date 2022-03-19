@@ -19,19 +19,6 @@ JdbcTemplate是spring框架中提供的一个对象，是对原始繁琐的Jdbc 
 导入spring-jdbc和spring-tx坐标
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.itheima</groupId>
-  <artifactId>itheima_spring_jdbc</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>war</packaging>
-
-  <name>itheima_spring_jdbc Maven Webapp</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
   <dependencies>
     <dependency>
       <groupId>mysql</groupId>
@@ -121,8 +108,6 @@ JdbcTemplate是spring框架中提供的一个对象，是对原始繁琐的Jdbc 
       <version>5.0.5.RELEASE</version>
     </dependency>
   </dependencies>
-</project>
-
 ```
 
 创建数据库表和实体
@@ -130,7 +115,7 @@ JdbcTemplate是spring框架中提供的一个对象，是对原始繁琐的Jdbc 
 ![](./img/3_1.png)
 
 ```java
-package com.itheima.domain;
+package com.xu1an.domain;
 
 public class Account {
 
@@ -182,6 +167,7 @@ public class Account {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         //设置数据源对象  知道数据库在哪
         jdbcTemplate.setDataSource(dataSource);
+        
         //执行操作
         int row = jdbcTemplate.update("insert into account values(?,?)", "tom", 5000);
         System.out.println(row);
@@ -230,7 +216,7 @@ public class Account {
 
 ## 06-JdbcTemplate基本使用-spring产生模板对象代码实现（抽取jdbc.properties）(应用)
 
-将数据库的连接信息抽取到外部配置文件中，和spring的配置文件分离开，有利于后期维护
+将数据库的连接信息抽取到外部配置文件(jdbc.properties)中，和spring的配置文件分离开，有利于后期维护
 
 ```properties
 jdbc.driver=com.mysql.jdbc.Driver
@@ -273,9 +259,9 @@ jdbc.password=root
 ## 07-JdbcTemplate基本使用-常用操作-更新操作(应用)
 
 ```java
-package com.itheima.test;
+package com.xu1an.test;
 
-import com.itheima.domain.Account;
+import com.xu1an.domain.Account;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -313,9 +299,9 @@ public class JdbcTemplateCRUDTest {
 ## 08-JdbcTemplate基本使用-常用操作-查询操作(应用)
 
 ```java
-package com.itheima.test;
+package com.xu1an.test;
 
-import com.itheima.domain.Account;
+import com.xu1an.domain.Account;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -402,7 +388,7 @@ TransactionDefinition 是事务的定义信息对象，里面有如下方法：
 
 #### 1. 事务隔离级别
 
-设置隔离级别，可以解决事务并发产生的问题，如脏读、不可重复读和虚读。
+设置隔离级别，可以解决事务并发产生的问题，如脏读、不可重复读和幻 读。
 
 - ISOLATION_DEFAULT
 
@@ -518,7 +504,7 @@ Spring 的声明式事务顾名思义就是采用声明的方式来处理事务�
 ```xml
 <!--事务的aop增强-->
 <aop:config>
-    <aop:pointcut id="myPointcut" expression="execution(* com.itheima.service.impl.*.*(..))"/>
+    <aop:pointcut id="myPointcut" expression="execution(* com.xu1an.service.impl.*.*(..))"/>
     <aop:advisor advice-ref="txAdvice" pointcut-ref="myPointcut"></aop:advisor>
 </aop:config>
 ```
@@ -613,7 +599,7 @@ public class AccountServiceImpl implements AccountService {
 ```xml
 <!—之前省略datsSource、jdbcTemplate、平台事务管理器的配置-->
 <!--组件扫描-->
-<context:component-scan base-package="com.itheima"/>
+<context:component-scan base-package="com.xu1an"/>
 <!--事务的注解驱动-->
 <tx:annotation-driven/>
 ```
