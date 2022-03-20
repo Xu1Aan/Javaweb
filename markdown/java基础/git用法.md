@@ -285,14 +285,15 @@ master主分支应该非常稳定，用来发布新版本，一般情况下不�
 - 本地开启VPN后，GIt也需要设置代理，才能正常略过GFW，访问goole code等网站
 
   ```shell
-  git config --global https.proxy http://127.0.0.1:10808
+  git config --global https.proxy http://127.0.0.1:10809
+  git config --global https.proxy socks://127.0.0.1:10808
   ```
-
+  
   取消
-
+  
   ```shell
   git config --global --unset http.proxy
   ```
-
+  
   
 
