@@ -80,7 +80,7 @@ SpringMVC 已经成为目前最主流的MVC框架之一，并且随着Spring3.0 
 
 ④使用注解配置Controller类中业务方法的映射地址
 
-⑤配置SpringMVC核心文件 spring-mvc.xml
+⑤配置SpringMVC核心文件 spring-mvc.xml（组件扫描）
 
 ⑥客户端发起请求测试
 
